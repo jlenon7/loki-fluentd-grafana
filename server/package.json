@@ -1,0 +1,11 @@
+{
+  "name": "server",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@secjs/http": "^0.0.5",
+    "tslib": "^2.3.1"
+  }
+}

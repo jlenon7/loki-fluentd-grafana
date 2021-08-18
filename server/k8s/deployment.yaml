@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-fluentd-api
+  labels:
+    app: hello-fluentd-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-fluentd-api
+  template:
+    metadata:
+      labels:
+        app: hello-fluentd-api
+    spec:
+      containers:
+        - name: hello-fluentd
+          image: jlenon7/hello-fluentd:latest
+          ports:
+            - containerPort: 8080
