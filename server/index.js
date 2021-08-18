@@ -1,10 +1,23 @@
 const { Sec } = require('@secjs/http')
+const { createLogger, format, transports } = require('winston')
+
+const logger = createLogger({
+  level: 'info',
+  format: format.combine(
+    format.timestamp(),
+    format.json(),
+  ),
+  transports: [
+    new transports.Console(),
+    new transports.File({ filename: 'logs.log' })
+  ],
+});
 
 const server = new Sec()
 
-const body = JSON.stringify({ message: "Hello FluentD!" })
+const body = JSON.stringify({ level: 'info', type: 'log', message: "Hello FluentD!" })
 
-setInterval(() => console.log(body), 10000)
+setInterval(() => logger.log(JSON.parse(body)), 10000)
 
 server.get('/', (ctx) => {
   ctx.response.writeHead(200, { 'Content-Type': 'application/json' })

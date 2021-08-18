@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
         - name: hello-fluentd
-          image: jlenon7/hello-fluentd:latest
+          image: jlenon7/hello-fluentd:logFile
           ports:
             - containerPort: 8080

@@ -7,43 +7,51 @@ metadata:
     app: fluentd-logging
 data: 
   fluent.conf: |
-    <source>
-      @type tail
-      path /var/log/*.log
-      exclude_path /var/log/containers/fluent*
-      pos_file /var/log/fluentd/tmp/access.log.pos
-      tag foo.*
-      <parse>
-        @type json
-      </parse>
-    </source>
+    ###################
+    ##### SOURCES #####
+    ###################
 
     <source>
       @type tail
       @id in_tail_container_logs
-      path /var/log/containers/*.log
+      tag hello.fluentd
+      path /var/log/containers/hello-fluentd*.log
       pos_file /var/log/fluentd-containers.log.pos
-      tag kubernetes.*
       read_from_head true
       <parse>
-        @type json
-        time_format %Y-%m-%dT%H:%M:%S.%NZ
+        @type multi_format
+        <pattern>
+          format json
+          time_key time
+          time_type string
+          time_format "%Y-%m-%dT%H:%M:%S.%NZ"
+          keep_time_key false
+        </pattern>
+        <pattern>
+          format regexp
+          expression /^(?<time>.+) (?<stream>stdout|stderr)( (.))? (?<log>.*)$/
+          time_format '%Y-%m-%dT%H:%M:%S.%NZ'
+          keep_time_key false
+        </pattern>
       </parse>
+      emit_unmatched_lines true
     </source>
 
-    <match fluentd.**>
-      @type null
-    </match>
+    ###################
+    ##### FILTERS #####
+    ###################
 
-    <match kubernetes.var.log.containers.**fluentd**.log>
-      @type null
-    </match>
+    # <filter hello.fluentd>
+    #   @type record_transformer
+    #   <record>
+    #     test "FluentD Filter"
+    #   </record>
+    # </filter>
 
-    <filter kubernetes.**>
-      @type kubernetes_metadata
-      @id filter_kube_metadata
-    </filter>
+    ###################
+    ##### OUTPUTS #####
+    ###################
     
-    <match kubernetes.var.log.containers.**>
+    <match hello.fluentd>
       @type stdout
     </match>
