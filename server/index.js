@@ -1,4 +1,4 @@
-const { Sec } = require('@secjs/http')
+const { SecJS } = require('@secjs/http')
 const { createLogger, format, transports } = require('winston')
 
 const logger = createLogger({
@@ -13,22 +13,18 @@ const logger = createLogger({
   ],
 });
 
-const server = new Sec()
+const server = new SecJS()
 
 const body = JSON.stringify({ level: 'info', type: 'log', message: "Hello FluentD!" })
 
 setInterval(() => logger.log(JSON.parse(body)), 10000)
 
 server.get('/', (ctx) => {
-  ctx.response.writeHead(200, { 'Content-Type': 'application/json' })
-
-  ctx.response.write(JSON.stringify({ 
-    path: ctx.request.url, 
-    statusCode: 200, 
-    data: JSON.parse(body) 
-  }))
-
-  ctx.response.end()
+  ctx.response.status(200).json({
+    path: ctx.request.url,
+    statusCode: 200,
+    data: JSON.parse(body)
+  })
 })
 
 server.listen(4040, () => console.log('Server running'))
