@@ -2,10 +2,10 @@ FROM node:12.21.0
 
 WORKDIR /workspace
 
-COPY package.json yarn.lock /workspace/
+COPY package.json package-lock.json /workspace/
 
-RUN yarn install --silent --production
+RUN npm install --silent --production
 
 COPY . .
 
-CMD ["node", "index.js"]
+CMD ["node", "start/main.mjs"]

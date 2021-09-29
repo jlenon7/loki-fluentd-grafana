@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
         - name: hello-fluentd
-          image: jlenon7/hello-fluentd:secjsserver
+          image: jlenon7/hello-fluentd:updateServer
           ports:
-            - containerPort: 8080
+            - containerPort: 4040

@@ -19,16 +19,22 @@ The intention behind this repository is to implement a stack to monitore pods in
 
 ## Usage
 
-> First create the FluentD DaemonSet inside Kubernetes, you can use [Kind](https://kind.sigs.k8s.io/) to create a local cluster
+> First create the FluentD DaemonSet inside Kubernetes and the service account, you can use [Kind](https://kind.sigs.k8s.io/) to create a local cluster.
 
 ```bash
-kubectl create -f fluentd/configmap.yaml -f fluentd/daemonset.yaml
+kubectl create -f fluentd/configmap.yaml -f fluentd/daemonset.yaml -f fluentd/service-account.yaml
 ```
 
-> Then run the NodeJS server that will keep logging every ten seconds
+> Then run the NodeJS server that will keep logging every ten seconds to FluentD collect the data.
 
 ```bash
 kubectl apply -f server/k8s
+```
+
+> FluentD will start collecting all the logs generated in the NodeJS server **stdout**. Run this command to see: 
+
+```bash
+kubectl logs -f -l name=fluentd-logging -n kube-system 
 ```
 
 CONTINUE...
